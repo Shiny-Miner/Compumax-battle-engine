@@ -35,6 +35,7 @@ const u16 gBattleTextPalette[] = INCBIN_U16("graphics/battle_interface/text.gbap
 const u32 gBattleFramesTilemap[] = INCBIN_U32("graphics/battle_interface/frames.bin.lz");
 const u32 gBattleEngTilemap[] = INCBIN_U32("graphics/battle_interface/battle_eng.bin.lz");
 const u32 gSafariEngTilemap[] = INCBIN_U32("graphics/battle_interface/safari_eng.bin.lz");
+const u8 gText_BattleTextPrefix[] = _("{COLOR 4}");
 
 static void WindowFunc_DrawDialogFrameWithCustomTileAndPalette(u8 bg, u8 tilemapLeft, u8 tilemapTop, u8 width, u8 height, u8 paletteNum)
 {
