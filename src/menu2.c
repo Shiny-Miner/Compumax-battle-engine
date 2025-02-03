@@ -7,6 +7,36 @@
 #include "constants/songs.h"
 #include "graphics.h"
 
+static EWRAM_DATA u16 sTileNum = 0;
+static EWRAM_DATA u8 sPaletteNum = 0;
+
+static void WindowFunc_DrawDialogFrameWithCustomTileAndPalette(u8 bg, u8 tilemapLeft, u8 tilemapTop, u8 width, u8 height, u8 paletteNum);
+
+static const u8 gUnknown_8456618[3] = {15, 1, 2};
+
+void DrawDialogFrameWithCustomTileAndPalette(u8 windowId, bool8 copyToVram, u16 tileNum, u8 paletteNum)
+{
+    sTileNum = tileNum;
+    sPaletteNum = paletteNum;
+    CallWindowFunction(windowId, WindowFunc_DrawDialogFrameWithCustomTileAndPalette);
+    FillWindowPixelBuffer(windowId, PIXEL_FILL(1));
+    PutWindowTilemap(windowId);
+    if (copyToVram == TRUE)
+        CopyWindowToVram(windowId, COPYWIN_BOTH);
+}
+
+// not used
+static void DrawDialogFrameWithCustomTile(u8 windowId, bool8 copyToVram, u16 tileNum)
+{
+    sTileNum = tileNum;
+    sPaletteNum = GetWindowAttribute(windowId, WINDOW_PALETTE_NUM);
+    CallWindowFunction(windowId, WindowFunc_DrawDialogFrameWithCustomTileAndPalette);
+    FillWindowPixelBuffer(windowId, PIXEL_FILL(1));
+    PutWindowTilemap(windowId);
+    if (copyToVram == TRUE)
+        CopyWindowToVram(windowId, COPYWIN_BOTH);
+}
+
 struct Menu
 {
     u8 tilemapLeft;
