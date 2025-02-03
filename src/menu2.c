@@ -23,12 +23,6 @@ struct Menu
     bool8 APressMuted;
 };
 
-static EWRAM_DATA struct Menu sMenu = {0};
-static EWRAM_DATA u16 sTileNum = 0;
-static EWRAM_DATA u8 sPaletteNum = 0;
-static EWRAM_DATA u8 sYesNoWindowId = 0;
-static EWRAM_DATA u8 sTopBarWindowId = 0;
-
 const u32 gBattleTiles[] = INCBIN_U32("graphics/battle_interface/tiles.4bpp.lz");
 const u16 gBattleFramesPalette[] = INCBIN_U16("graphics/battle_interface/frames.gbapal");
 const u16 gBattleTextPalette[] = INCBIN_U16("graphics/battle_interface/text.gbapal");

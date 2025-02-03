@@ -25,7 +25,7 @@ export ASFLAGS := -mthumb
 export INCLUDES := -I $(SRC) -I . -I include -D$(ROM_CODE)
 export WARNINGFLAGS :=	-Wall -Wno-discarded-array-qualifiers \
 	-Wno-int-conversion
-export CFLAGS := -g -O2 $(WARNINGFLAGS) -mthumb -std=gnu17 $(INCLUDES) -mcpu=arm7tdmi \
+export CFLAGS := -g -O2 $(WARNINGFLAGS) -mthumb -std=gnu11 $(INCLUDES) -mcpu=arm7tdmi \
 	-march=armv4t -mno-thumb-interwork -fno-inline -fno-builtin -mlong-calls -DROM_$(ROM_CODE) \
 	-fdiagnostics-color -mtune=arm7tdmi -finline -mabi=aapcs
 # -mabi=apcs-gnu #EABI version 0
