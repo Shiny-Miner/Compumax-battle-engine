@@ -244,33 +244,4 @@ void LoadBattleTextboxAndBackground(void)
         LoadBattleMenuWindowGfx();
     DrawMainBattleBackground();
 }
-bool8 LoadChosenBattleElement(u8 caseId)
-{
-    bool8 ret = FALSE;
-    u8 battleScene;
-    switch (caseId)
-    {
-    case 0:		
-    LoadBattleTextboxAndBackground();
-		break;
-    case 1:
-        battleScene = GetBattleTerrainOverride();
-        LZDecompressVram(sBattleTerrainTable[battleScene].tileset, (void *)BG_CHAR_ADDR(2));
-        break;
-    case 2:
-        battleScene = GetBattleTerrainOverride();
-        LZDecompressVram(sBattleTerrainTable[battleScene].tilemap, (void *)BG_SCREEN_ADDR(26));
-        break;
-    case 3:
-        battleScene = GetBattleTerrainOverride();
-        LoadCompressedPalette(sBattleTerrainTable[battleScene].palette, 0x20, 0x60);
-        break;
-    case 4:
-        LoadBattleMenuWindowGfx();
-        break;
-    default:
-        ret = TRUE;
-        break;
-    }
-    return ret;
-}
+

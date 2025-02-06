@@ -421,27 +421,10 @@ static void MoveSelectionDisplayMoveNames(void)
         StringCopy(gDisplayedStringBattle, gText_BattleTextPrefix);
 
 		if (i == gMoveSelectionCursor[gActiveBattler])
-		{			
-			if (gSaveBlock2Ptr->optionsLanguage == ENG)
-			{
 				StringAppend(gDisplayedStringBattle, gMoveNames[moveInfo->moves[i]]);
-			}
-			if (gSaveBlock2Ptr->optionsLanguage == SPA)
-			{
-				StringAppend(gDisplayedStringBattle, gMoveNamesSpa[moveInfo->moves[i]]);
-			}
-			BattlePutTextOnWindow(gDisplayedStringBattle, i + 3);
-		}
+			    BattlePutTextOnWindow(gDisplayedStringBattle, i + 3);
 		else
-		{			
-			if (gSaveBlock2Ptr->optionsLanguage == ENG)
-			{
 				StringCopy(gDisplayedStringBattle, gMoveNames[moveInfo->moves[i]]);
-			}
-			if (gSaveBlock2Ptr->optionsLanguage == SPA)
-			{
-				StringCopy(gDisplayedStringBattle, gMoveNamesSpa[moveInfo->moves[i]]);
-			}
 			BattlePutTextOnWindow(gDisplayedStringBattle, i + 3);
 		}
         if (moveInfo->moves[i] != MOVE_NONE)
@@ -453,10 +436,7 @@ static void MoveSelectionDisplayTypeIcon(void)
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);
 	u8 type = gBattleMoves[moveInfo->moves[gMoveSelectionCursor[gActiveBattler]]].type;
 	FillWindowPixelRect(9, 0xF, 0, 0, 32, 16);
-	if (gSaveBlock2Ptr->optionsLanguage == ENG)
 		BlitMoveInfoIcon(9, type + 1, 0, 3);
-	if (gSaveBlock2Ptr->optionsLanguage == SPA)
-		BlitMoveInfoIcon(9, type + 24, 0, 3);
 	PutWindowTilemap(9);
 	CopyWindowToVram(9, COPYWIN_BOTH);
 }
@@ -500,3 +480,5 @@ static void LightSelectionMenu(void)
 		break;
 	}
 }
+
+
