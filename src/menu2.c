@@ -7,8 +7,8 @@
 #include "constants/songs.h"
 #include "graphics.h"
 
-static EWRAM_DATA u16 sTileNum = 0;
-static EWRAM_DATA u8 sPaletteNum = 0;
+extern u16 sTileNum;
+extern u8 sPaletteNum;
 
 static void WindowFunc_DrawDialogFrameWithCustomTileAndPalette(u8 bg, u8 tilemapLeft, u8 tilemapTop, u8 width, u8 height, u8 paletteNum);
 

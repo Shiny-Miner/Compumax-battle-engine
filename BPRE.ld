@@ -1047,3 +1047,5 @@ RunTextPrinters = 0x08002de8 | 1;
 IsTextPrinterActive = 0x08002e64 | 1;
 ClearWindowTilemap = 0x080040b8 | 1;
 SetVBlankCallback = 0x080006f4 | 1;
+
+
