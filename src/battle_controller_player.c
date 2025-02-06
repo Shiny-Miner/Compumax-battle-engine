@@ -423,14 +423,10 @@ static void MoveSelectionDisplayMoveNames(void)
 		if (i == gMoveSelectionCursor[gActiveBattler])
 				StringAppend(gDisplayedStringBattle, gMoveNames[moveInfo->moves[i]]);
 			    BattlePutTextOnWindow(gDisplayedStringBattle, i + 3);
-		else
-				StringCopy(gDisplayedStringBattle, gMoveNames[moveInfo->moves[i]]);
-			BattlePutTextOnWindow(gDisplayedStringBattle, i + 3);
 		}
-        if (moveInfo->moves[i] != MOVE_NONE)
+    if (moveInfo->moves[i] != MOVE_NONE)
             ++gNumberOfMovesToChoose;
     }
-}
 static void MoveSelectionDisplayTypeIcon(void)
 {
     struct ChooseMoveStruct *moveInfo = (struct ChooseMoveStruct *)(&gBattleBufferA[gActiveBattler][4]);

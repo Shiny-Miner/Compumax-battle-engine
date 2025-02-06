@@ -1049,3 +1049,5 @@ ClearWindowTilemap = 0x080040b8 | 1;
 SetVBlankCallback = 0x080006f4 | 1;
 
 
+OpponentBufferExecCompleted = 0x08036530|1;
+
