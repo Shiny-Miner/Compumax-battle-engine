@@ -1051,3 +1051,40 @@ SetVBlankCallback = 0x080006f4 | 1;
 
 OpponentBufferExecCompleted = 0x08036530|1;
 
+/*  Added from pokefirered.sym: ROM-internal (static) symbols used by the battle engine sources  */
+AddBagItem = 0x0809a084 | 1;
+BattlePutTextOnWindow = 0x080d87bc | 1;
+BattleStringExpandPlaceholdersToDisplayedString = 0x080d77f4 | 1;
+BlitMoveInfoIcon = 0x08107d68 | 1;
+BtlController_EmitTwoReturnValues = 0x0800e848 | 1;
+CopyToBgTilemapBuffer = 0x08002040 | 1;
+CpuSet = 0x081e3b64 | 1;
+DoBounceEffect = 0x08012138 | 1;
+DrawMainBattleBackground = 0x0800f40c | 1;
+EndBounceEffect = 0x08012258 | 1;
+FillWindowPixelRect = 0x08004378 | 1;
+gBattleMoves = 0x08250c04;
+gBitTable = 0x0825e45c;
+GetBattlerAtPosition = 0x080751e8 | 1;
+GetBattlerPosition = 0x080751d8 | 1;
+GetBattlerSide = 0x080751c4 | 1;
+gFireRedMenuElements2_Pal = 0x08e95dbc;
+gMoveNames = 0x08247094;
+HandleInputChooseMove = 0x0802ea10 | 1;
+IsDma3ManagerBusyWithBgCopy = 0x08001960 | 1;
+LZDecompressVram = 0x0800ebc0 | 1;
+MoveSelectionDisplayPpNumber = 0x080308cc | 1;
+MoveSelectionDisplayPpString = 0x080308a8 | 1;
+OakOldManBufferExecCompleted = 0x080e8a9c | 1;
+OakOldManHandleInputChooseMove = 0x080e7988 | 1;
+PlayerBufferExecCompleted = 0x0802e33c | 1;
+SafariBufferExecCompleted = 0x080dd8c8 | 1;
+SetMonData = 0x0804037c | 1;
+SpriteCb_HideAsMoveTarget = 0x08012098 | 1;
+SpriteCb_ShowAsMoveTarget = 0x08012044 | 1;
+sTargetIdentities = 0x08250980;
+SwapHpBarsWithHpText = 0x08048a4c | 1;
+TextWindow_SetUserSelectedFrame = 0x0815001c | 1;
+
+CallWindowFunction = 0x0800486c | 1;
+GetWindowAttribute = 0x08004950 | 1;

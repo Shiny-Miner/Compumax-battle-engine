@@ -78,6 +78,17 @@ GBA_8BPP_GBAPALLZ := $(GBA_8BPPPAL:%.pal=%.gbapal)
 GBA_8BPP_PAL_LZ := $(GBA_8BPP_GBAPALLZ:%=%.lz)
 
 
+# Battle interface graphics that menu2.c pulls in with INCBIN_*.
+# They live directly in graphics/battle_interface (not in the png_to_* folders
+# above), so they are listed explicitly. Chains used: png -> 4bpp -> lz,
+# pal -> gbapal, bin -> lz (see the pattern rules below).
+BATTLE_GFX := $(GRAPHICS)/battle_interface/tiles.4bpp.lz \
+	$(GRAPHICS)/battle_interface/frames.gbapal \
+	$(GRAPHICS)/battle_interface/text.gbapal \
+	$(GRAPHICS)/battle_interface/frames.bin.lz \
+	$(GRAPHICS)/battle_interface/battle_eng.bin.lz \
+	$(GRAPHICS)/battle_interface/safari_eng.bin.lz
+
 # Sources
 C_SRC := $(call rwildcard,$(SRC),*.c)
 S_SRC := $(call rwildcard,$(SRC),*.s)
@@ -90,7 +101,7 @@ ALL_OBJ := $(C_OBJ) $(S_OBJ)
 
 #-------------------------------------------------------------------------------
 
-.PHONY: all rom clean graphics
+.PHONY: all rom clean graphics battlegfx
 
 all: clean graphics rom
 
@@ -111,10 +122,13 @@ clean:
 	rm -rf $(GBA_8BPP_GBAPAL)
 	rm -rf $(GBA_4BPP_PAL_LZ)
 	rm -rf $(GBA_8BPP_PAL_LZ)
+	rm -rf $(BATTLE_GFX)
 
 $(BINARY): $(ALL_OBJ)
 	@echo "\nLinking ELF binary $@"
 	@$(LD) $(LDFLAGS) -o $@ $^
+
+$(BUILD)/src/menu2.o: $(BATTLE_GFX)
 
 $(BUILD)/%.o: %.c
 	@echo "\nCompiling $<"
@@ -156,7 +170,9 @@ gbapaltolz: $(GBA_4BPP_PAL_LZ) $(GBA_8BPP_PAL_LZ)
 	rm -rf $(GBA_8BPP_GBAPALLZ)
 
 
-graphics: bintolz pngto4bpp pngto8bpp gbaXbpptolz pngtopal paltogbapal  gbapaltolz
+battlegfx: $(BATTLE_GFX)
+
+graphics: battlegfx bintolz pngto4bpp pngto8bpp gbaXbpptolz pngtopal paltogbapal  gbapaltolz
 
 firered:              	; @$(MAKE) ROM_CODE=BPRE
 rojofuego:           	; @$(MAKE) ROM_CODE=BPRS

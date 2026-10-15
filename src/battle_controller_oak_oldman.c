@@ -17,15 +17,13 @@
 #include "battle_message.h"
 #include "reshow_battle_screen.h"
 #include "battle_string_ids.h"
+#include "battle_engine_hooks.h"
 #include "constants/songs.h"
 #include "constants/items.h"
 
-static void PrintOakTextWithMainBgDarkened(const u8 *text, u8 a1);
-static void LightSelectionMenu(void);
-static void HandleInputChooseAction(void);
 
 
-static void HandleInputChooseAction(void)
+void Hook_OakOldMan_HandleInputChooseAction(void)
 {
     // Like player, but specifically for Rival in Oak's Lab
     u16 itemId = gBattleBufferA[gActiveBattler][2] | (gBattleBufferA[gActiveBattler][3] << 8);
@@ -59,7 +57,7 @@ static void HandleInputChooseAction(void)
         {
             PlaySE(SE_SELECT);
             gActionSelectionCursor[gActiveBattler] ^= 1;
-			LightSelectionMenu();
+BattleMenu_LightSelection();
         }
     }
     else if (JOY_NEW(DPAD_RIGHT))
@@ -68,7 +66,7 @@ static void HandleInputChooseAction(void)
         {
             PlaySE(SE_SELECT);
             gActionSelectionCursor[gActiveBattler] ^= 1;
-			LightSelectionMenu();
+BattleMenu_LightSelection();
         }
     }
     else if (JOY_NEW(DPAD_UP))
@@ -77,7 +75,7 @@ static void HandleInputChooseAction(void)
         {
             PlaySE(SE_SELECT);
             gActionSelectionCursor[gActiveBattler] ^= 2;
-			LightSelectionMenu();
+BattleMenu_LightSelection();
         }
     }
     else if (JOY_NEW(DPAD_DOWN))
@@ -86,7 +84,7 @@ static void HandleInputChooseAction(void)
         {
             PlaySE(SE_SELECT);
             gActionSelectionCursor[gActiveBattler] ^= 2;
-			LightSelectionMenu();
+BattleMenu_LightSelection();
         }
     }
     else if (JOY_NEW(B_BUTTON))
@@ -114,7 +112,7 @@ static void HandleInputChooseAction(void)
         SwapHpBarsWithHpText();
     }
 }
-static void SimulateInputChooseAction(void)
+void Hook_OakOldMan_SimulateInputChooseAction(void)
 {
     // Old Man
     switch (gBattleStruct->simulatedInputState[0])
@@ -129,7 +127,7 @@ static void SimulateInputChooseAction(void)
             // Move cursor to BAG
             PlaySE(SE_SELECT);
 			gActionSelectionCursor[gActiveBattler] ^= 1;
-			LightSelectionMenu();
+BattleMenu_LightSelection();
             gBattleStruct->simulatedInputState[2] = 64;
             ++gBattleStruct->simulatedInputState[0];
         }
@@ -145,7 +143,7 @@ static void SimulateInputChooseAction(void)
         break;
     }
 }
-static void PrintOakTextWithMainBgDarkened(const u8 *text, u8 a2)
+void Hook_OakOldMan_PrintTextWithMainBgDarkened(const u8 *text, u8 delay)
 {
     // If delay is 0, it's treated as 256.
     switch (gBattleStruct->simulatedInputState[0])
@@ -153,6 +151,7 @@ static void PrintOakTextWithMainBgDarkened(const u8 *text, u8 a2)
     case 0:
         if (!IsTextPrinterActive(0))
         {
+            gBattleStruct->simulatedInputState[3] = delay;
             ++gBattleStruct->simulatedInputState[0];
         }
         break;
@@ -170,7 +169,7 @@ static void PrintOakTextWithMainBgDarkened(const u8 *text, u8 a2)
     case 2:
         if (!gPaletteFade.active)
         {
-            BtlCtrl_DrawVoiceoverMessageFrame();
+            Hook_BtlCtrl_DrawVoiceoverMessageFrame();
             ++gBattleStruct->simulatedInputState[0];
         }
         break;
@@ -182,6 +181,7 @@ static void PrintOakTextWithMainBgDarkened(const u8 *text, u8 a2)
     case 4:
         if (!IsTextPrinterActive(24))
         {
+            Hook_BtlCtrl_RemoveVoiceoverMessageFrame();
                 BeginNormalPaletteFade(0xFFFF3FFF,
                                    4,
                                    8,
@@ -192,7 +192,8 @@ static void PrintOakTextWithMainBgDarkened(const u8 *text, u8 a2)
         break;
     case 5:
         if (!gPaletteFade.active)
-        {if (GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER)
+        {
+            if (GetBattlerSide(gActiveBattler) == B_SIDE_PLAYER)
                 OakOldManBufferExecCompleted();
             else
                 OpponentBufferExecCompleted();
@@ -203,28 +204,33 @@ static void PrintOakTextWithMainBgDarkened(const u8 *text, u8 a2)
     }
 }
 
-void BtlCtrl_DrawVoiceoverMessageFrame(void)
+void Hook_BtlCtrl_DrawVoiceoverMessageFrame(void)
 {
-    	FillBgTilemapBufferRect(0, 7, 	1, 	 15, 	28,  4, 	14);
+    FillBgTilemapBufferRect(0, 7, 	1, 	 15, 	28,  4, 	14);
 }
-static void LightSelectionMenu(void)
+
+// Redraws the engine's own battle message frame (tiles 3-0xD, palette 14, rows
+// 14-19, columns 0-29 - identical to gBattleFramesTilemap).
+// The ROM's BtlCtrl_RemoveVoiceoverMessageFrame restores the *vanilla* frame
+// tiles, which show up as garbage on the bottom row / right column with the
+// engine's tileset. PrintOakText_ForPetesSake / PrintOakText_KeepAnEyeOnHP still
+// call it from the ROM, so it has to be replaced as well.
+void Hook_BtlCtrl_RemoveVoiceoverMessageFrame(void)
 {
-	u16 palette[1] = {RGB( 31, 31, 31)};
-	
-	LoadPalette(gBattleFramesPalette, 0xE0, 0x20);
-	switch (gActionSelectionCursor[gActiveBattler])
-	{
-	case 0:
-		LoadPalette(&palette, 0xEC, 2);
-		break;
-	case 1:
-		LoadPalette(&palette, 0xED, 2);
-		break;
-	case 2:
-		LoadPalette(&palette, 0xEE, 2);
-		break;
-	case 3:
-		LoadPalette(&palette, 0xEF, 2);
-		break;
-	}
+    // top row
+    FillBgTilemapBufferRect(0, 3,    0, 14,  1, 1, 14);
+    FillBgTilemapBufferRect(0, 4,    1, 14, 28, 1, 14);
+    FillBgTilemapBufferRect(0, 5,   29, 14,  1, 1, 14);
+    // left / right edges
+    FillBgTilemapBufferRect(0, 6,    0, 15,  1, 3, 14);
+    FillBgTilemapBufferRect(0, 8,   29, 15,  1, 3, 14);
+    FillBgTilemapBufferRect(0, 9,    0, 18,  1, 1, 14);
+    FillBgTilemapBufferRect(0, 10,  29, 18,  1, 1, 14);
+    // interior
+    FillBgTilemapBufferRect(0, 7,    1, 15, 28, 4, 14);
+    // bottom row
+    FillBgTilemapBufferRect(0, 11,   0, 19,  1, 1, 14);
+    FillBgTilemapBufferRect(0, 12,   1, 19, 28, 1, 14);
+    FillBgTilemapBufferRect(0, 13,  29, 19,  1, 1, 14);
+    CopyBgTilemapBufferToVram(0);
 }

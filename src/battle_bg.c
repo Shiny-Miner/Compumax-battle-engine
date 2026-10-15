@@ -13,8 +13,11 @@
 #include "constants/maps.h"
 #include "constants/songs.h"
 #include "constants/trainer_classes.h"
+#include "battle_engine_hooks.h"
 
-static const struct WindowTemplate gUnknown_8248330[] = { //Fix baseBlock
+// Replaces the ROM table sStandardBattleWindowTemplates (same size: 26 entries).
+// The pointer to it is patched in hooks/BPRE/hooks.s.
+const struct WindowTemplate gBattleWindowTemplates_Engine[] = {
     {	//Intro Texts
         .bg = 0,
         .tilemapLeft = 1,
@@ -218,16 +221,18 @@ static const struct WindowTemplate gUnknown_8248330[] = { //Fix baseBlock
     }, DUMMY_WIN_TEMPLATE
 };
 
-void LoadBattleMenuWindowGfx(void)
-{    TextWindow_SetUserSelectedFrame(2, 0x022, 0xC0);
+void Hook_LoadBattleMenuWindowGfx(void)
+{
+    TextWindow_SetUserSelectedFrame(2, 0x022, 0xC0);
     gPlttBufferUnfaded[0xFC] = RGB( 9,  9,  9);
     gPlttBufferUnfaded[0xFD] = RGB( 9,  9,  9);
     gPlttBufferUnfaded[0xFE] = RGB(31, 31, 31);
     gPlttBufferUnfaded[0xFF] = RGB( 26,  26,  25);
     CpuCopy16(&gPlttBufferUnfaded[0xFC], &gPlttBufferFaded[0xFC], 8);
 }
-void LoadBattleTextboxAndBackground(void)
-{    LZDecompressVram(gBattleTiles, (void *)BG_CHAR_ADDR(0));
+void Hook_LoadBattleTextboxAndBackground(void)
+{
+    LZDecompressVram(gBattleTiles, (void *)BG_CHAR_ADDR(0));
 	CopyToBgTilemapBuffer(0, gBattleFramesTilemap, 0, 0x000);
     if (gBattleTypeFlags & BATTLE_TYPE_SAFARI)
 		{
@@ -241,7 +246,30 @@ void LoadBattleTextboxAndBackground(void)
     LoadPalette(gBattleFramesPalette, 0xE0, 0x20);
 	LoadPalette(gBattleTextPalette, 0xF0, 0x20);
 	CopyBgTilemapBufferToVram(0);
-        LoadBattleMenuWindowGfx();
+    Hook_LoadBattleMenuWindowGfx();
     DrawMainBattleBackground();
 }
 
+// Highlights the currently selected FIGHT/BAG/POKEMON/RUN entry by recolouring
+// its slot in the battle frame palette (replaces the tilemap arrow cursor).
+void BattleMenu_LightSelection(void)
+{
+    u16 white = RGB_WHITE;
+
+    LoadPalette(gBattleFramesPalette, 0xE0, 0x20);
+    switch (gActionSelectionCursor[gActiveBattler])
+    {
+    case 0:
+        LoadPalette(&white, 0xEC, sizeof(white));
+        break;
+    case 1:
+        LoadPalette(&white, 0xED, sizeof(white));
+        break;
+    case 2:
+        LoadPalette(&white, 0xEE, sizeof(white));
+        break;
+    case 3:
+        LoadPalette(&white, 0xEF, sizeof(white));
+        break;
+    }
+}
